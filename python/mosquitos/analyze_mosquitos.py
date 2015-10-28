@@ -9,6 +9,17 @@ def fahr_to_celsius(temp_fahr):
     return temp_celsius
 
 def create_mosquitos_vs_tempC_plot(filename):
+    """Create a png plot of mosquitos vs temp C
+
+    Parameters
+    ----------
+    filename : string
+        name of csv data file
+    Returns
+    -------
+    mosquito_data : DataFrame
+        Table with temp C column
+    """
     # write processing here
     # load data
     print("Loading", filename)
