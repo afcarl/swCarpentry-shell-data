@@ -1,0 +1,370 @@
+av
+git Please complete the pre-workshop questionnaire if you haven't done already (we got only 18):
+http://goo.gl/forms/2mV1JbQNcg
+
+Bash
+
+ls -l : detailed directory listing
+ls -F : add / at the end of folder names to identify them
+ls -t : sorted by time stamps
+cd : change folder
+cd .. : go to parent folder
+~ : home folder
+cd - # last dir
+ls -G # list with color (I hope)
+
+ls -lh output size of files using k for kilobytes, M for Megabytes, etc. ("h"umanly readable) (need also to use -l with this)
+^l # clean screen (same as clear) (the "^" means the "control" key)
+^c # interrupt currently (interactively) running process, normally used to get the command line back
+open -R animals.txt  # Opens file in Finder (ONLY ON MAC) ;(
+open -a PROGRAM_NAME FILENAME open files in your favorite program (ONLY ON MAC)
+
+cat filename.txt  # will output contents of file to terminal
+
+wc filename.txt # lines words characters
+wc -l filename.txt # number of lines
+awk -F "," '$2 == "rabbit"' animals.txt ## look for specific word (rabbit) in second column
+
+Pipes and filters
+
+cut -d ' ' -f 1 filename.txt  # cut by space delimeter and f is the first column
+
+cut -d ',' -f 2 animals.txt | sort | uniq -c     #counts number of each type of entry in column 2
+cut -d '-' -f 1 animals.txt    #grabs column 1, delimited by "-"
+cut -d '-' -f 1,2 animals.txt  #grabs columns 1&2, delimited by "-"
+
+uniq -c      #counts the number of unique values in the selected column but you have to "sort" first because it only checks if the next line down is the same
+
+Finding things
+
+grep rabbit animals.txt # finds rabbit in file
+grep -i # makes it case indifferent
+## getting help 
+search google first! 
+grep --help 
+man grep # on mac and linux - search within man use "/"
+
+history | grep -i cat #returns all commands in your history with the cat call
+
+Loops & Shell scripts
+
+#basic function that you want to apply to multiple files:
+cut -d ',' -f 2 animals.txt | sort | uniq -c 
+
+#script to apply it to multiple files:
+for filename in *animals.txt       #use wildcards however appropriate to select only .txt files you want
+do
+	echo $filename   # tells bash to treat 'filename" as a variable rather than as an actual file or directory name
+	cut -d ',' -f 2 $filename | sort | uniq
+done
+
+
+# .sh extension convention for shell script 
+
+
+# write the commands in the text editor (nano or notepad), save the file with .sh extension, and to run the script (ie, "script.sh") in the command window
+    $ bash script.sh
+	    #output will be output of the commands in the file
+	
+# to save output of script:
+$ bash countAnimals.sh> allanimals.txt
+
+#can use piping on output of script:
+$ bash countAnimals.sh | sort | uniq -c
+        #reports counts of each animal across both files
+
+# everything after a '#' is ignored, this is why we have been writing the '#' for comments in this thing.
+
+# this thing is awesome. I agree!
+
+Change color on MAC OSX Terminal
+		For those that want to change the text colors in their mac terminal here are the insturctions:
+		    1. Go to your home directory
+		    2. type nano .bash_profile
+		    3. paste in the following code:
+		# alias ls with flags -G colorizes ouput,  -F throws a / after a directory,
+		# -h makes file sizes more readable
+		alias ls='ls -GFh'
+		# The next two enable command line colors, and define 'ls' colors
+		export CLICOLOR=1
+		export LSCOLORS=ExFxBxDxCxegedabagacad
+		# Next line rearranges the bash prompt and colorizes it
+		export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
+		    4. Then restart your terminal
+		# You can also type the following to update your bash_profile without restarting terminal:
+		source ~/.bash_profile
+
+
+Version control with git
+
+#Set up some global configuration (once per computer):
+git config --global user.name "Your Name"
+git config --global user.email "email@school.edu
+git config --global core.editor "nano -w"
+
+git config --list #to see options you configured
+
+#Git is always tied to a folder
+#1. make a folder + change into it
+$ mkdir planets
+$ cd planets
+
+#2. initialize a git repository 
+$ git init
+
+#3. check that it worked
+$ ls -a            #shows you the hidden .git folder, which contains all history, versions, etc info. If you remove this folder, you've removed all git information
+
+#4. make a file 
+$ nano mars.txt             # add some text to this file
+#5. check status of repository
+$ git status                    # shows you the untracked mars.txt
+
+#Git can be thought of like an amazon shopping cart -- first you add something to the cart, then you purchase.
+#6. Add mars.txt to the "Cart"
+$ git add mars.txt
+
+#7. Purchase! Use a "commit" to place the file under version control with git
+$ git commit -m"added first version of mars.txt"  #add a helpful message so you know what you changed
+$ git log                  #allows you to see all changes you made to the repository
+
+#8. Make a change to the file
+$ nano mars.txt        #add a line of text
+$ git status               #detects a change in mars.txt
+$ git diff                    #shows you the difference between the last saved version & the new changes you made to mars.txt
+
+#9. Commit those changes
+$ git add mars.txt      
+$ git status
+$ gged a line in mars.txt"
+
+# How to create the bio repository
+cd
+mkdir bio
+cd bio
+git init
+
+Create a file me.txt in the bio repository,
+add 1 line, commit
+add second line, DON'T ADD, DON'T COMMIT
+show difference
+
+# Use git diff to see difference between any two versions
+$ git diff HEAD~1 mars.txt        # difference between last version & second-to-last version
+$ git diff HEAD~2 mars.txt        # difference between last version & 2 versions ago
+
+$ git log      # to see hash #s for each version
+$ git diff XXX YYY     # where XXX and YYY are the beginnings of the long hash #'s for each commit (i.e. 2a2563b2d07181ecf472d9829e3a461962048211)
+
+# nano mars.txt         #Make a change
+# How to undo that change/revert back to last commit?
+$ git checkout HEAD mars.txt      # get the last version                    
+# This is especially useful if you accidentally deleted your file -- unless you add & commit the deletion, you can get the file back using this command
+
+You can also recover other versions:
+$ git checkout HEAD~1 mars.txt        # check out an older version 
+$ git checkout HEAD mars.txt            # go back to head (most recently committed) version
+
+Tell git to ignore (not track) certain files:
+$ nano .gitignore
+file contents:
+    *.dat          # files ending in .dat
+    results/     # the results folder
+$ git status       # shows you that those files (dat, results) are not being tracked
+$ git add .gitignore      # you want this to stay with your repository
+$ git commit -m "adding gitignore"
+.gitignore also prevents you from accidentally adding one of those files to the repository
+
+$ git log --stat         #provides more info on git log
+
+#so far, all of the above only applies "git" functions within your own local drive; no push/pull to any outside servers yet
+
+GITHUB (github.com)
+
+create user name
+use the '+' to create a new "remote" repository that is on github's servers (not your local computer)
+to link your "planets" to this new repository, copy the link 
+$ git remote add origin https://github.com/username/planets
+$ git push -u origin master
+
+# to check the link to the remote repository:
+$ git remote -v
+
+# now go back to github to see the repository online
+# Important -- You have to "push" every time you want to update the online ("remote") repository. Otherwise, your commits will only be in your local repository (on your computer).
+
+#Note that you can create files/edit the repository, then commit those changes using the online github interface. BUT, these changes will only be in the online version until you "pull" or "fetch" them down into your local repository.
+$ git pull
+
+#NOTE:
+#If you used the git@github.com:username/planets link, you may have trouble..
+    $ git remote set-url origin https://github.com/username/planets
+    $ git push -u origin master
+  #  then you can git pull, etc
+
+Multiple edits, same github repository....
+#if git push gives you an error, likely different commits on your local repository.
+
+# If changes are not in conflict
+$ git pull   #will automatically merge 
+$ git push origin master
+
+# If changes ARE in conflict (i.e. change happened on same line of text)
+$ git pull   #will NOT automatically merge 
+# --> manually fix the conflict (git has added syntax to the file in conflict to show you both versions. manually edit to the version you want. make sure you remove all the extra text that git added.)
+$ git pull
+$ git push origin master
+
+
+
+
+
+git
+
+# other references: 
+    markdowntutorial.com --> markdown format 
+# this figure seems very helpful for understanding the git data transport commands: http://i.stack.imgur.com/MgaV9.png
+
+# branching: making changes to a repository, and submitting it to be merged within the original repository
+# forking:  copying a repository folder into your repository, and then making changes to your own copy; will not be merged with the original version
+
+If you have trouble or warnings with line endings, it is a common issue, see:
+    
+https://help.github.com/articles/dealing-with-line-endings/
+
+########################### Day 2 #################################
+
+Python
+
+Setup:
+In the directory from yesterday (~/swCarpentry-shell-data) do:
+$ git pull
+
+1. get into inflamation directory in Git Bash, (~/swCarpentry-shell-data/python/inflamation) - will give you access to those files in python
+2. $ipython notebook
+3. on Jupyter "home" page, go to "new" -> Python3; will get new python notebook page
+
+load numpy package:  import numpy
+
+-In line, can hit tab after "numpy. to" pull up options.
+-If you change and re-enter a previous line, the line numbering will change to reflect this, but only that one line will be executed. Any subsequent dependent lines will need to be re-executed.
+
+load inflammation.csv as variable "data": data = numpy.loadtxt(fname='inflammation-01.csv', delimiter=',')
+
+get first 4 rows and first 4 columns:
+    small=data[0:4,0:4]
+	    have to include 0 (?), unlike R
+	print(small[0:1,0:1] returns the first value in the array
+	print(small[0,:])  :  first row
+	
+small.max()
+small.min()
+small[0,:].mean()   mean of first row
+small[0,:].max()     max of first row
+
+for loops -
+
+example:  create a string of letters called "word"
+
+word = 'lead'
+		#this is a string of letters, 1 dimensional
+		
+for letters in word:
+	  print(letter)      #where ever you use "letters" in the indented space, 
+							#it will substitue a value from the variable "word"
+print("done")
+
+for-loop repeats for each value in the variable word,
+so prints "l e a d"    and then next command, "done"
+
+can also work if the variable contains numbers instead of letters in a string
+
+#lists are created using brackets
+mylist=[0,1,2,"a","b",vowel]  
+	#lists can contain different data types, ie, here it has both numbers and letters, and even strings of letters (vowel = 'aeiou')
+	
+If you screw up, or notebook freezes (get * instead of line number in notebook) can restart python processes: 
+	    kernal->restart
+			this will clear your envirnoment so you will have to re-run the code that defines your variables  (Do packages have to be loaded again?)
+	
+To add notes in Python, just write text, and when you execute that block it will be turned into Markdown format (maybe on Mac only?  in Windows, change block from code to text in the toolbar)
+
+to get a list of numbers 0:5  ->  num = list(range(0,6))
+
+you can change elements of a list, but not of a string
+
+concatenate lists:   list1 + list2
+
+numbers.append("value")
+
+numbers.reverse()
+
+
+Python, Part 2 (afternoon)
+
+$ cd ~/swCarpentry-shell-data/python/mosquitos
+$ ipython notebook
+
+import pandas
+!command allows you to run bash commands
+!ls  == "ls" like bash
+
+pandas has "dataframes" which are similar to numpy arrays
+
+
+Plotting, again - 
+
+%matplotlib inline
+data["temperature"].plot(color="green",marker="*")
+
+can read more at matplotlib homepage, gallery
+matplotlib.org/gallery.html
+
+#to plot 2 columns against each other, have to define one column as the index
+data.set_index("year")
+
+#re-write "data" as a table with year as the index
+data = data.set_index("year")
+#now the x-axis in plot is the year instead of row number
+data["temperature"].plot(color="blue",marker="*")
+
+#to display mosquitos column when rainfall > 200
+data[data["rainfall"]<200].mosquitos
+#same as
+data["mosquitos"][data["rainfall"]<200] 
+
+#the values in the index stay with the data 
+mosq_low_rain = data["mosquitos"][data["rainfall"]<200]   #even the new object retains index info, in this case the index is year
+mosq_low_rain  #see the set index when the data is displayed
+
+#can easily plot all data columns against the index column 
+data.plot()
+
+
+##How to write a function:  use "def" to tell python you are writing a function
+
+def fahr_to_celsius(temp_fahr):        #to call function, its name is "fahr_to_celsius" is its name, and numbers fed to the function are used where ever "temp_fahr" variable is used
+
+def fahr_to_celsius(tamp_fahr):
+       temp_cels = (temp_fahr - 32)*5/9
+       return(temp_cels)
+       
+fahr_to_cel(212)
+#should return 100
+
+#multiline strings - use 3 "  on each end (  " " "  write whatever " " ")
+# use multiline strings within functions instead of "#" to write notes on what the function does inside the function code
+
+#can run functions on columns of dataframes -
+fahr_to_cel(data["temperature"])
+
+#append output of function as a new collumn in dataframe "data"
+data["temp_C"] = fahr_to_cel(data["temperature"])
+print(data.head())
+
+
+
+
+
+
+
